@@ -31,7 +31,11 @@ def get_streets():
     if streets:
         street_out = []
         for street in streets:
-            street_dict = dict(id=street.id, title=street.title)
+            volunteers = db.session.query(Volunteer).filter(Volunteer.street_id == int(street.id)).all()
+            volunteers_id = []
+            for volunteer in volunteers:
+                volunteers_id.append(volunteer.id)
+            street_dict = dict(id=street.id, title=street.title, volunteer=volunteers_id)
             street_out.append(street_dict)
         return jsonify(street_out)
     return jsonify(), 404
@@ -45,7 +49,8 @@ def get_volunteers():
         if volunteers:
             volunteers_out = []
             for volunteer in volunteers:
-                volunteer_dict = dict(id=volunteer.id, name=volunteer.name, phone=volunteer.phone)
+                volunteer_dict = dict(id=volunteer.id, name=volunteer.name, userpic=volunteer.userpic,
+                                      phone=volunteer.phone)
                 volunteers_out.append(volunteer_dict)
             return jsonify(volunteers_out)
     return jsonify(), 404
